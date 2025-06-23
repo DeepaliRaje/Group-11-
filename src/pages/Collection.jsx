@@ -32,6 +32,10 @@ const Collection = () => {
   }
 
   const applyFilter = () => {
+    if (!Array.isArray(products)) {
+      setFilterProducts([]); // or handle loading state if needed
+      return;
+    }
     let productsCopy = products.slice();
 
     if(showSearch && search) {
@@ -71,7 +75,7 @@ const Collection = () => {
 
   useEffect(()=>{
       applyFilter();
-  },[category,subCategory,search,showSearch])
+  },[category,subCategory,search,showSearch,products])
 
   useEffect(()=>{
     sortProduct();

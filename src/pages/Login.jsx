@@ -1,31 +1,44 @@
-import { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ShopContext } from '../context/ShopContext';
+
 
 export default function Login() {
+
+  const {token, setToken, backendUrl} = useContext(ShopContext)
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const [name, setName] = useState('')
+  
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    const res = await fetch('/api/login', {
+    try{
+    const res = await fetch(`${backendUrl}/api/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
     });
 
     const data = await res.json();
-    if (data.token) {
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('role', data.role);
 
-      if (data.role === 'Admin') navigate('/admin');
-      else if (data.role === 'Vendor') navigate('/vendor');
-      else if (data.role === 'SuperAdmin') navigate('/superadmin');
-      else navigate('/user');
-    } else {
-      alert('Login failed');
+    if (data.token) {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('role', data.role);
+        setToken(data.token);
+
+        if (data.role === 'Admin') navigate('/admin');
+        else if (data.role === 'Vendor') navigate('/vendor');
+        else if (data.role === 'SuperAdmin') navigate('/superadmin');
+        else navigate('/user');
+      } else {
+        alert('Login failed');
+      }
+    } catch (error) {
+      console.error(error);
+      alert('Server error');
     }
   };
 
