@@ -1,11 +1,13 @@
 import mongoose from "mongoose";
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const connectDB = async () => {
-
-    mongoose.Connection.on('connected',() => {
-        console.log("DB connected")
+    mongoose.connection.on('connected',() => {
+        console.log("Db Connected");
     })
-    await mongoose.connect('${process.env.MONGODB_URI}/e-commerce')
+    await mongoose.connect(`${process.env.MONGO_URI}/zproject`)
 }
 
 export default connectDB;
